@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+dist/
+build/
+
+# Local caches and generated data (committed outputs live under data/)
+*.sqlite
+*.db
+out/
+.cache/

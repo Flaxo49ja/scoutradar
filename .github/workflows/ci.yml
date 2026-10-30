@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install package + test deps
+        run: pip install --editable ".[dev]"
+      - name: Run offline test suite
+        run: python -m pytest -q
+
+  ml:
+    # The anomaly layer is optional in v0.1; test it whenever scikit-learn
+    # is present so the extra stays honest.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install with ml extra
+        run: pip install --editable ".[dev,ml]"
+      - name: Run full test suite (incl. anomaly tests)
+        run: python -m pytest -q
